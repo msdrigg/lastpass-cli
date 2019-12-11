@@ -16,7 +16,7 @@ decides it wants to continue work on their CLI client I'm happy to fork back.
 
 ## Operating System Support
 
-`lpass` is designed to run on GNU/Linux, Cygwin and Mac OS X.
+`lpass` is designed to run on GNU/Linux, Cygwin and MacOS / OS X.
 
 ## Dependencies
 
@@ -134,7 +134,7 @@ sudo emerge lastpass-cli
 Install the packages listed in the Dependencies section of this document,
 and then follow instructions in the 'Building' section.
 
-### Installing on OS X
+### Installing on MacOS / OS X
 
 #### With [Homebrew](http://brew.sh/) (easiest)
 * Install Homebrew, if necessary.
@@ -171,8 +171,13 @@ sudo port install lastpass-cli-doc
 ```
 
 #### Manually
-Install the packages listed in the Dependencies section of this document,
-and then follow instructions in the 'Building' section.
+Install the packages listed in the Dependencies section of this document:
+
+```
+brew install curl openssl@1.1 libxml2 pinentry pkg-config asciidoc libxslt
+```
+
+Then follow instructions in the 'Building' section.
 
 ### Installing on FreeBSD
 * Install the binary package:
@@ -198,7 +203,13 @@ apt-cyg install wget make cmake gcc-core gcc-g++ openssl-devel libcurl-devel lib
 
 ## Building
 
+Generally:
+
     $ make
+
+For macOS / OS X:
+
+    $ PREFIX=/usr/local make
 
 Under the covers, make invokes cmake in a build directory; you may also use
 cmake directly if you need more control over the build process.
