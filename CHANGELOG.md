@@ -1,3 +1,16 @@
+# NEXT
+ * Fork of LogMeIn code to become a real community project
+ * Update askpass to use more explicit message (Quentin Dawans)
+ * Fix adding group to shared folder (Jonathan King)
+ * Add more details about MacOS build documentation (Jim Howell)
+ * http.c: add missing call to va\_end (Piotr Trojanek)
+ * Fix GCC 10+ build (Eric Engestrom)
+ * Auto disable pintentry when connected via ssh (Eric Engestrom)
+ * Enable supplying a fragment which is required for Okta SSO login (John
+   Newbigin)
+ * Fix sed for POSIX compliance in contrib script (Filippo Rossi)
+ * git-credential-helper: add support for store and erase (Maël Valais)
+
 # Version 1.3.3
  * Decrease the time for the cli app to do things (Wesley Schwengle)
  * 'blob_load' refactor (Wesley Schwengle)

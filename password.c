@@ -55,9 +55,10 @@ static char *password_prompt_askpass(const char *askpass, const char *prompt, co
 	FILE *output;
 	char *password = NULL, *lastlf;
 	size_t len;
+	char message[1024];
+	vsnprintf(message, sizeof(message), descfmt, params);
 	UNUSED(error);
-	UNUSED(descfmt);
-	UNUSED(params);
+	UNUSED(prompt);
 
 	if (pipe(write_fds) < 0 || pipe(read_fds) < 0)
 		die_errno("pipe");
@@ -73,7 +74,7 @@ static char *password_prompt_askpass(const char *askpass, const char *prompt, co
 		close(read_fds[1]);
 		close(write_fds[0]);
 		close(write_fds[1]);
-		execlp(askpass, "lpass-askpass", prompt, NULL);
+		execlp(askpass, "lpass-askpass", message, NULL);
 		_exit(76);
 	}
 	close(read_fds[1]);
@@ -227,6 +228,7 @@ char *password_prompt(const char *prompt, const char *error, const char *descfmt
 	_cleanup_free_ char *prompt_colon = NULL;
 	_cleanup_free_ char *password = NULL;
 	char *password_fallback;
+	char *ssh_detected;
 	char *askpass;
 	char *pinentry_fallback = "pinentry";
 	char *pinentry;
@@ -243,7 +245,8 @@ char *password_prompt(const char *prompt, const char *error, const char *descfmt
 	}
 
 	password_fallback = getenv("LPASS_DISABLE_PINENTRY");
-	if (password_fallback && !strcmp(password_fallback, "1")) {
+	ssh_detected = getenv("SSH_CONNECTION");
+	if ((password_fallback && !strcmp(password_fallback, "1")) || ssh_detected) {
 		va_start(params, descfmt);
 		password_fallback = password_prompt_fallback(prompt, error, descfmt, params);
 		va_end(params);
