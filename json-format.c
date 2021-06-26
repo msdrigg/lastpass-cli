@@ -170,24 +170,16 @@ void json_add_string_field(struct json_field *object,
 	list_add_tail(&field->siblings, &object->children);
 }
 
-static
-void json_add_array_field(struct json_field *object,
-			   const char *name, struct list_head *value)
-{
-	if (!value)
-		return;
+static void accound_field_to_json_field(struct field *field, struct json_field *obj) {
+	obj->name = NULL;
+	obj->type = JSON_OBJECT;
 
-	struct json_field *field = xmalloc(sizeof(struct json_field));
-	field->name = name;
-	field->type = JSON_ARRAY;
-	field->children = *value;
-
-	list_add_tail(&field->siblings, &object->children);
+	json_add_string_field(obj, "name", field->name);
+	json_add_string_field(obj, "value", field->value);
 }
 
 static
-void account_to_json_field(struct account *account, struct json_field *obj)
-{
+void account_to_json_field(struct account *account, struct json_field *obj) {
 	obj->name = NULL;
 	obj->type = JSON_OBJECT;
 
@@ -205,24 +197,24 @@ void account_to_json_field(struct account *account, struct json_field *obj)
 	json_add_string_field(obj, "url", account->url);
 	json_add_string_field(obj, "note", account->note);
 
-	struct json_field array = {
-		.type = JSON_ARRAY
-	};
-	INIT_LIST_HEAD(&array.children);
+	struct json_field *array_json = xmalloc(sizeof(*array_json));
+    array_json->type = JSON_ARRAY;
+	INIT_LIST_HEAD(&array_json->children);
+    array_json->name = "fields";
 
 	struct field *child;
-	//struct json_field *child;
 	list_for_each_entry(child, &account->field_head, list) {
-	        struct json_field *field = xmalloc(sizeof(struct json_field));
-	        field->name = child->name;
-	        field->type = JSON_STRING;
-	        field->u.string_value = child->value;
+        struct json_field *account_field_json = xmalloc(sizeof(*account_field_json));
+        account_field_json->name = NULL;
+        account_field_json->type = JSON_OBJECT;
+        INIT_LIST_HEAD(&account_field_json->children);
 
-                list_add_tail(&field->siblings, &array.children);
-        }
+        accound_field_to_json_field(child, account_field_json);
 
-	json_add_array_field(obj, "fields", &array.children);
-	//json_add_array_field(obj, "fields", &account->field_head);
+        list_add_tail(&account_field_json->siblings, &array_json->children);
+    }
+
+    list_add_tail(&array_json->siblings, &obj->children);
 }
 
 static void json_free_account_fields(struct json_field *obj)
