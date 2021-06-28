@@ -327,14 +327,17 @@ char *http_post_lastpass_v_noexit(const char *server, const char *page, const st
 	*curl_ret = ret;
 
 	if (ret != CURLE_OK) {
+        printf("CURL NOT OKAY\n");
 		result.len = 0;
 		free(result.ptr);
 		result.ptr = NULL;
 	} else if (!result.ptr)
+        printf("NO POINTER IN RESULT\n");
 		result.ptr = xstrdup("");
 	if (final_len)
 		*final_len = result.len;
 
+    printf("\n\nGETTING CURL RESULT:\n%s\n\n", result.ptr)
 	return result.ptr;
 }
 #endif
