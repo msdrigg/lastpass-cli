@@ -275,9 +275,11 @@ char *http_post_lastpass_v_noexit(const char *server, const char *page, const st
 	if (len && postdata)
 		postdata[len - 1] = '\0';
 
+
 	memset(&result, 0, sizeof(result));
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_USERAGENT, LASTPASS_CLI_USERAGENT);
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
 
 	/* TODO: Make this optional via either env vars and/or an option for
 	 *       lpass -4 or lpass -6
@@ -305,8 +307,12 @@ char *http_post_lastpass_v_noexit(const char *server, const char *page, const st
 	curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1);
 	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, check_interruption);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
-	if (postdata)
+	if (postdata) {
+        printf("\n\nPOSTING WITH POSTDATA: %s\n\n", postdata);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata);
+    } else {
+        printf("\n\nPOSTING WITH NO DATA\n\n");
+    }
 	if (session) {
 		xasprintf(&cookie, "PHPSESSID=%s", session->sessionid);
 		curl_easy_setopt(curl, CURLOPT_COOKIE, cookie);
